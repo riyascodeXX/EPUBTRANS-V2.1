@@ -8,12 +8,16 @@ import { getServerSideURL } from '@/utilities/getURL'
 import { headers } from 'next/headers'
 import { getLanguage } from '@/config/languages'
 import { LocaleProvider } from '@/components/i18n/LocaleProvider'
+import { EpubtransAssistant } from '@/components/assistant/EpubtransAssistant'
+import { getSiteSettings } from '@/lib/content'
 import './globals.css'
 import '../../styles-tokens.css'
 import '../../styles-enterprise.css'
+import '@/components/assistant/assistant.css'
 export const dynamic = 'force-dynamic'
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
   const locale = getLanguage((await headers()).get('x-epubtrans-language') || 'en')?.code || 'en'
+  const settings = await getSiteSettings()
   const organization = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -40,6 +44,10 @@ export default async function FrontendLayout({ children }: { children: React.Rea
               {children}
             </div>
             <Footer />
+            <EpubtransAssistant
+              email={settings.email || 'info@epubtrans.com'}
+              phone={settings.phone || '+91 44 3136 3907'}
+            />
           </LocaleProvider>
         </Providers>
         <script

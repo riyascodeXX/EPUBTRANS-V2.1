@@ -74,3 +74,9 @@ For an update: create a backup, build the next image, run reviewed forward migra
 ## Native-language reading
 
 See LANGUAGES.md. Automatic translation uses MyMemory without an API key; configure GOOGLE_TRANSLATE_API_KEY for Google Cloud Translation and higher traffic volumes. Allow outbound HTTPS to api.mymemory.translated.net or translation.googleapis.com as appropriate. PostgreSQL stays on the internal network and neither app nor database publishes a host port. Translations persist in a separate volume; the cache can be rebuilt and is not a business-data backup.
+
+## AI assistant
+
+Set GEMINI_API_KEY in the server environment (.env locally or .env.production for Compose), then restart the app. Keep this key server-side; never use a NEXT_PUBLIC_ variable for it. GEMINI_ASSISTANT_MODEL defaults to gemini-3.5-flash-lite. The assistant sends the recent conversation to the Gemini API and streams replies into the existing chat panel. The key's project must have access and available quota for the selected model.
+
+The endpoint limits message size, concurrent replies and requests per minute. ASSISTANT_DAILY_REQUEST_LIMIT defaults to 300 requests per process per UTC day; these in-memory counters reset on restart. Allow outbound HTTPS to generativelanguage.googleapis.com. Without a key or when the provider fails, visitors receive an honest availability message and can retry or contact the team. The app does not persist transcripts; Google's data-use and retention policies apply to provider requests.
