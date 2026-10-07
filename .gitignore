@@ -20,3 +20,12 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Local database backups contain private records; never commit.
+.local-backups/
+private-uploads/
+artifacts/v2/baseline/
+
+.env.production
+backups/
+*.tsbuildinfo

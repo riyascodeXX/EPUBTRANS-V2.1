@@ -30,7 +30,8 @@ export const ThemeSelector: React.FC = () => {
 
   React.useEffect(() => {
     const preference = window.localStorage.getItem(themeLocalStorageKey)
-    setValue(preference ?? 'auto')
+    const frame = requestAnimationFrame(() => setValue(preference ?? 'auto'))
+    return () => cancelAnimationFrame(frame)
   }, [])
 
   return (

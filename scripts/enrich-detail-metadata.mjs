@@ -1,0 +1,3 @@
+import fs from 'node:fs'
+const paths=['services','solutions','industries','insights','work'].map(route=>`src/app/(frontend)/${route}/[slug]/page.tsx`)
+for(const file of paths){let text=fs.readFileSync(file,'utf8');if(!text.includes("import {pageMetadata}"))text="import {pageMetadata} from '@/lib/seo'\n"+text;const lines=text.split('\n');for(let i=0;i<lines.length;i++){if(lines[i].startsWith('export async function generateMetadata')&&lines[i].includes('return {')){const start=lines[i].indexOf('return {'),last=lines[i].lastIndexOf('}');lines[i]=lines[i].slice(0,start)+'return pageMetadata('+lines[i].slice(start+7,last)+')'+lines[i].slice(last)}}fs.writeFileSync(file,lines.join('\n'))}

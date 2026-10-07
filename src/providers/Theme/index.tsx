@@ -48,7 +48,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     document.documentElement.setAttribute('data-theme', themeToSet)
-    setThemeState(themeToSet)
+    const frame = requestAnimationFrame(() => setThemeState(themeToSet))
+    return () => cancelAnimationFrame(frame)
   }, [])
 
   return <ThemeContext value={{ setTheme, theme }}>{children}</ThemeContext>

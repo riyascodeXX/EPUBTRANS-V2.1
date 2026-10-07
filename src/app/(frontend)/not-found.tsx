@@ -1,18 +1,15 @@
-import Link from 'next/link'
-import React from 'react'
-
-import { Button } from '@/components/ui/button'
-
+import { PageHero, ArrowLink } from '@/components/editorial/Primitives'
 export default function NotFound() {
   return (
-    <div className="container py-28">
-      <div className="prose max-w-none">
-        <h1 style={{ marginBottom: 0 }}>404</h1>
-        <p className="mb-4">This page could not be found.</p>
+    <main>
+      <PageHero
+        eyebrow="404 / A DIFFERENT CHAPTER"
+        title="This page is out of the edition."
+        description="The page may have moved, or it may not be published yet."
+      />
+      <div className="et-container et-content-section">
+        <ArrowLink href="/">Return to the homepage</ArrowLink>
       </div>
-      <Button asChild variant="default">
-        <Link href="/">Go home</Link>
-      </Button>
-    </div>
+    </main>
   )
 }

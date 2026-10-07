@@ -1,46 +1,22 @@
-import { getPayload } from 'payload'
+import { randomUUID } from 'node:crypto'
+import { getPayload, type Payload } from 'payload'
 import config from '../../src/payload.config.js'
 
 export const testUser = {
-  email: 'dev@payloadcms.com',
-  password: 'test',
+  email: `epubtrans-admin-qa-${randomUUID()}@example.invalid`,
+  password: randomUUID() + randomUUID(),
 }
+let payload: Payload | undefined
+let createdID: number | undefined
 
-/**
- * Seeds a test user for e2e admin tests.
- */
 export async function seedTestUser(): Promise<void> {
-  const payload = await getPayload({ config })
-
-  // Delete existing test user if any
-  await payload.delete({
-    collection: 'users',
-    where: {
-      email: {
-        equals: testUser.email,
-      },
-    },
-  })
-
-  // Create fresh test user
-  await payload.create({
-    collection: 'users',
-    data: testUser,
-  })
+  payload = await getPayload({ config })
+  const user = await payload.create({ collection: 'users', data: testUser })
+  createdID = user.id
 }
 
-/**
- * Cleans up test user after tests
- */
 export async function cleanupTestUser(): Promise<void> {
-  const payload = await getPayload({ config })
-
-  await payload.delete({
-    collection: 'users',
-    where: {
-      email: {
-        equals: testUser.email,
-      },
-    },
-  })
+  if (payload && createdID !== undefined)
+    await payload.delete({ collection: 'users', id: createdID })
+  await payload?.destroy()
 }

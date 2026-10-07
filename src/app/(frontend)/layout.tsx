@@ -1,53 +1,66 @@
 import type { Metadata } from 'next'
-
-import { cn } from '@/utilities/ui'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
-import React from 'react'
-
-import { AdminBar } from '@/components/AdminBar'
-import { Footer } from '@/Footer/Component'
-import { Header } from '@/Header/Component'
+import { Header } from '@/components/navigation/Header'
+import { Footer } from '@/components/navigation/Footer'
 import { Providers } from '@/providers'
-import { InitTheme } from '@/providers/Theme/InitTheme'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import { draftMode } from 'next/headers'
-
-import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
-
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isEnabled } = await draftMode()
-
+import './globals.css'
+import '../../styles-tokens.css'
+import '../../styles-enterprise.css'
+export const dynamic = 'force-dynamic'
+export default function FrontendLayout({ children }: { children: React.ReactNode }) {
+  const organization = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'EPUBTRANS',
+    url: getServerSideURL(),
+    email: 'info@epubtrans.com',
+    telephone: '+91 44 3136 3907',
+  }
   return (
-    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
-      <head>
-        <InitTheme />
-        <link href="/favicon.ico" rel="icon" sizes="32x32" />
-        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
-      </head>
-      <body>
+    <html
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      lang="en"
+      dir="ltr"
+      data-theme="light"
+    >
+      <body className="et-site">
         <Providers>
-          <AdminBar
-            adminBarProps={{
-              preview: isEnabled,
-            }}
-          />
-
+          <a className="et-skip" href="#main-content">
+            Skip to main content
+          </a>
           <Header />
-          {children}
+          <div id="main-content" tabIndex={-1}>
+            {children}
+          </div>
           <Footer />
         </Providers>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organization).replace(/</g, '\\u003c'),
+          }}
+        />
       </body>
     </html>
   )
 }
-
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
-  openGraph: mergeOpenGraph(),
+  title: { default: 'EPUBTRANS', template: '%s | EPUBTRANS' },
+  description:
+    'Professional publishing, translation, localization, multimedia, and accessibility services.',
+  icons: { icon: '/favicon.jpeg' },
+  openGraph: {
+    type: 'website',
+    siteName: 'EPUBTRANS',
+    title: { default: 'EPUBTRANS', template: '%s | EPUBTRANS' },
+    description: 'Publishing, language and digital content services.',
+  },
   twitter: {
-    card: 'summary_large_image',
-    creator: '@payloadcms',
+    card: 'summary',
+    title: 'EPUBTRANS',
+    description: 'Publishing, language and digital content services.',
   },
 }

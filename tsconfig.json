@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "strict": true,
-    "baseUrl": ".",
     "esModuleInterop": true,
     "target": "ES2022",
     "lib": [
@@ -25,6 +24,9 @@
       }
     ],
     "paths": {
+      "src/*": [
+        "./src/*"
+      ],
       "@payload-config": [
         "./src/payload.config.ts"
       ],
@@ -47,6 +49,7 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "artifacts"
   ]
 }

@@ -1,31 +1,77 @@
-version: '3'
-
+name: epubtrans-v2
+x-app: &app
+  image: epubtrans-v2:local
+  build:
+    context: .
+    args:
+      NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL:?Set the canonical HTTPS origin}
+  environment:
+    DATABASE_URL: postgres://${POSTGRES_USER:-epubtrans}:${POSTGRES_PASSWORD:?Set a strong database password}@postgres:5432/${POSTGRES_DB:-epubtrans}
+    PAYLOAD_SECRET: ${PAYLOAD_SECRET:?Set a strong Payload secret}
+    PREVIEW_SECRET: ${PREVIEW_SECRET:?Set a distinct preview secret}
+    NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL}
+    PRIVATE_UPLOAD_DIR: /app/private-uploads
+    TRUST_NGINX_PROXY: 'true'
+  volumes:
+    - media:/app/public/media
+    - private_uploads:/app/private-uploads
+  networks: [internal]
+  depends_on:
+    postgres:
+      condition: service_healthy
+  logging:
+    driver: json-file
+    options:
+      max-size: '10m'
+      max-file: '3'
 services:
-  payload:
-    image: node:18-alpine
-    ports:
-      - '3000:3000'
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-epubtrans}
+      POSTGRES_USER: ${POSTGRES_USER:-epubtrans}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a strong database password}
     volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "yarn install && yarn dev"
+      - database:/var/lib/postgresql/data
+    networks: [internal]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  app:
+    <<: *app
+    restart: unless-stopped
+  migrate:
+    <<: *app
+    profiles: [tools]
+    command: ['node', 'node_modules/payload/bin.js', 'migrate']
+    restart: 'no'
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports: ['80:80', '443:443']
+    environment:
+      SITE_HOST: ${SITE_HOST:?Set the domain without protocol}
+      NGINX_ENVSUBST_FILTER: '^SITE_HOST$'
+    volumes:
+      - ./deployment/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ${CERTIFICATE_DIRECTORY:-/etc/letsencrypt}:/etc/letsencrypt:ro
+    networks: [internal, public]
     depends_on:
-      - mongo
-    env_file:
-      - .env
-
-  mongo:
-    image: mongo:latest
-    ports:
-      - '27017:27017'
-    command:
-      - --storageEngine=wiredTiger
-    volumes:
-      - data:/data/db
+      app:
+        condition: service_healthy
     logging:
-      driver: none
-
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 volumes:
-  data:
-  node_modules:
+  database:
+  media:
+  private_uploads:
+networks:
+  internal:
+    internal: true
+  public:

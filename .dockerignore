@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.env
+.env.*
+!.env.example
+artifacts
+.local-backups
+private-uploads
+public/media
+test-results
+playwright-report

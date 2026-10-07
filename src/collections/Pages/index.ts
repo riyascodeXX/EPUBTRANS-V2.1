@@ -1,3 +1,4 @@
+import { EnterpriseBlocks } from '@/payload/blocks/enterprise'
 import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
@@ -72,7 +73,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, ...EnterpriseBlocks],
               required: true,
               admin: {
                 initCollapsed: true,
