@@ -1,7 +1,7 @@
 import { pageMetadata } from '@/lib/seo'
 import { listContent } from '@/lib/content'
 import { ContentCTA, PageHero } from '@/components/editorial/Primitives'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 export const dynamic = 'force-dynamic'
 export const metadata = pageMetadata({
   title: 'What We Do',
@@ -68,3 +68,4 @@ export default async function ServicesPage() {
     </main>
   )
 }
+

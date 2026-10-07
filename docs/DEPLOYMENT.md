@@ -70,3 +70,7 @@ Container logs rotate at 10 MB × 3 for app/Nginx. Containers restart unless sto
 
 For an update: create a backup, build the next image, run reviewed forward migrations, restart app/Nginx and verify health. Keep the previous image tag for code rollback. Do not automatically run destructive down migrations; restore to a separate database first when a data rollback is required.
 
+
+## Native-language reading
+
+See LANGUAGES.md. Automatic translation uses MyMemory without an API key; configure GOOGLE_TRANSLATE_API_KEY for Google Cloud Translation and higher traffic volumes. Allow outbound HTTPS to api.mymemory.translated.net or translation.googleapis.com as appropriate. PostgreSQL stays on the internal network and neither app nor database publishes a host port. Translations persist in a separate volume; the cache can be rebuilt and is not a business-data backup.

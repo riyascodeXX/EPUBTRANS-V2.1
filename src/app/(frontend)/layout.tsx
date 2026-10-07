@@ -5,11 +5,15 @@ import { Header } from '@/components/navigation/Header'
 import { Footer } from '@/components/navigation/Footer'
 import { Providers } from '@/providers'
 import { getServerSideURL } from '@/utilities/getURL'
+import { headers } from 'next/headers'
+import { getLanguage } from '@/config/languages'
+import { LocaleProvider } from '@/components/i18n/LocaleProvider'
 import './globals.css'
 import '../../styles-tokens.css'
 import '../../styles-enterprise.css'
 export const dynamic = 'force-dynamic'
-export default function FrontendLayout({ children }: { children: React.ReactNode }) {
+export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
+  const locale = getLanguage((await headers()).get('x-epubtrans-language') || 'en')?.code || 'en'
   const organization = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -27,14 +31,16 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
     >
       <body className="et-site">
         <Providers>
-          <a className="et-skip" href="#main-content">
-            Skip to main content
-          </a>
-          <Header />
-          <div id="main-content" tabIndex={-1}>
-            {children}
-          </div>
-          <Footer />
+          <LocaleProvider locale={locale}>
+            <a className="et-skip" href="#main-content">
+              Skip to main content
+            </a>
+            <Header />
+            <div id="main-content" tabIndex={-1}>
+              {children}
+            </div>
+            <Footer />
+          </LocaleProvider>
         </Providers>
         <script
           type="application/ld+json"

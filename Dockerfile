@@ -23,7 +23,7 @@ COPY --from=builder --chown=epubtrans:epubtrans /app/node_modules ./node_modules
 COPY --from=builder --chown=epubtrans:epubtrans /app/src ./src
 COPY --from=builder --chown=epubtrans:epubtrans /app/package.json /app/tsconfig.json ./
 COPY --from=builder --chown=epubtrans:epubtrans /app/scripts ./scripts
-RUN mkdir -p /app/private-uploads /app/public/media && chown -R epubtrans:epubtrans /app/private-uploads /app/public/media
+RUN mkdir -p /app/private-uploads /app/public/media /app/translation-cache && chown -R epubtrans:epubtrans /app/private-uploads /app/public/media /app/translation-cache
 USER epubtrans
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=45s CMD node -e "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"

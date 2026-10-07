@@ -19,3 +19,4 @@ export default async function SolutionPage({ params }: Props) {
   if (!document) notFound()
   return <DetailPage document={document} section="Solutions" route="solutions" />
 }
+

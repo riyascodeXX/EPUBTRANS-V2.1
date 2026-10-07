@@ -19,3 +19,4 @@ export default async function IndustryPage({ params }: Props) {
   if (!document) notFound()
   return <DetailPage document={document} section="Industries" route="industries" />
 }
+

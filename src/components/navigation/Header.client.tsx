@@ -1,14 +1,17 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { ArrowRight, ChevronDown, Globe2, Menu, X } from 'lucide-react'
 import type { NavigationSection } from '@/types/navigation'
 import { Logo } from './Logo'
+import { LanguageSelector } from '@/components/i18n/LanguageSelector'
+import { useSiteLocale } from '@/components/i18n/LocaleProvider'
+import { stripLanguage } from '@/config/languages'
 
 export function HeaderClient({ navigation }: { navigation: NavigationSection[] }) {
   const pathname = usePathname()
-  return <HeaderState key={pathname} pathname={pathname} navigation={navigation} />
+  return <HeaderState key={pathname} pathname={stripLanguage(pathname)} navigation={navigation} />
 }
 function HeaderState({
   pathname,
@@ -18,9 +21,12 @@ function HeaderState({
   navigation: NavigationSection[]
 }) {
   const [open, setOpen] = useState<number | null>(null)
+  const locale = useSiteLocale()
   const [scrolled, setScrolled] = useState(false)
   const header = useRef<HTMLElement>(null)
   const dialog = useRef<HTMLDialogElement>(null)
+  const languageDialog = useRef<HTMLDialogElement>(null)
+  const languageButton = useRef<HTMLButtonElement>(null)
   const menuButton = useRef<HTMLButtonElement>(null)
   const trigger = useRef<HTMLButtonElement | null>(null)
   const [mobileSection, setMobileSection] = useState<number | null>(null)
@@ -58,6 +64,11 @@ function HeaderState({
     dialog.current?.close()
     document.body.style.overflow = ''
     menuButton.current?.focus()
+  }
+  const closeLanguage = () => {
+    languageDialog.current?.close()
+    document.body.style.overflow = ''
+    languageButton.current?.focus()
   }
   return (
     <header
@@ -120,12 +131,27 @@ function HeaderState({
               setOpen(open === 99 ? null : 99)
             }}
           >
-            <Globe2 size={15} /> EN <ChevronDown size={12} />
+            <Globe2 size={15} />{' '}
+            <span data-no-translate>{locale === 'zh-CN' ? 'ZH' : locale.toUpperCase()}</span>{' '}
+            <ChevronDown size={12} />
           </button>
           <Link className="et-button" href="/get-a-quote">
             Get a Quote <ArrowRight size={16} className="et-arrow" />
           </Link>
         </div>
+        <button
+          ref={languageButton}
+          className="et-mobile-language-toggle"
+          aria-label="Choose website language"
+          aria-haspopup="dialog"
+          onClick={() => {
+            languageDialog.current?.showModal()
+            document.body.style.overflow = 'hidden'
+          }}
+        >
+          <Globe2 size={17} aria-hidden="true" />
+          <span data-no-translate>{locale === 'zh-CN' ? 'ZH' : locale.toUpperCase()}</span>
+        </button>
         <button
           ref={menuButton}
           className="et-mobile-toggle"
@@ -190,10 +216,7 @@ function HeaderState({
       )}
       {open === 99 && (
         <div id="language-options" className="et-language">
-          <strong>
-            English <span aria-hidden="true">✓</span>
-          </strong>
-          <p>More languages will be available as translated content is published.</p>
+          <LanguageSelector onSelect={() => setOpen(null)} />
         </div>
       )}
       <dialog
@@ -224,7 +247,10 @@ function HeaderState({
                   {mobileSection === index && (
                     <div id={`mobile-${index}`}>
                       <Link href={item.href!} onClick={closeMobile}>
-                        Explore all services →
+                        {item.label === 'What We Do'
+                          ? 'Explore all services'
+                          : 'Explore ' + item.label.toLowerCase()}{' '}
+                        →
                       </Link>
                       {item.groups.map((group) => (
                         <details key={group.title}>
@@ -252,13 +278,29 @@ function HeaderState({
             </div>
           ))}
           <details className="et-language-inline">
-            <summary>English</summary>
-            <p>English is currently the available site language.</p>
+            <summary>Choose your language</summary>
+            <LanguageSelector onSelect={closeMobile} />
           </details>
           <Link className="et-button" href="/get-a-quote" onClick={closeMobile}>
             Get a Quote <ArrowRight size={18} />
           </Link>
         </nav>
+      </dialog>
+      <dialog
+        ref={languageDialog}
+        className="et-mobile-language-dialog"
+        aria-label="Choose website language"
+        onCancel={closeLanguage}
+      >
+        <div className="et-mobile-language-top">
+          <Logo />
+          <button type="button" onClick={closeLanguage} aria-label="Close language selection">
+            <X size={24} />
+          </button>
+        </div>
+        <div className="et-mobile-language-body">
+          <LanguageSelector onSelect={closeLanguage} />
+        </div>
       </dialog>
     </header>
   )

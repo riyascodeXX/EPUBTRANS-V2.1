@@ -1,0 +1,129 @@
+import { test, expect } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
+
+test('careers page and company menu work at mobile and desktop widths', async ({ page }) => {
+  for (const width of [375, 1440]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/company/careers')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Your talent. Our next chapter.',
+    )
+    await expect(page.getByRole('heading', { name: 'Find your next chapter.' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Contact the team' })).toHaveAttribute(
+      'href',
+      /^mailto:/,
+    )
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true)
+    expect(
+      (
+        await new AxeBuilder({ page })
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
+    ).toEqual([])
+  }
+  await page.getByRole('button', { name: 'Company', exact: true }).click()
+  await expect(
+    page.locator('.et-mega').getByRole('link', { name: 'Careers', exact: true }),
+  ).toBeVisible()
+})
+
+test('native language selector preserves the route, internal links and English return', async ({
+  page,
+}) => {
+  await page.route('**/api/translate', async (route) => {
+    const { texts } = route.request().postDataJSON()
+    await route.fulfill({
+      json: { translations: Object.fromEntries(texts.map((text: string) => [text, text])) },
+    })
+  })
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/company/careers')
+  await page.getByRole('button', { name: 'EN', exact: true }).click()
+  const selector = page.locator('#language-options')
+  await expect(
+    selector.getByRole('group', { name: 'Indian languages' }).getByRole('button'),
+  ).toHaveCount(4)
+  await expect(
+    selector.getByRole('group', { name: 'Global languages' }).getByRole('button'),
+  ).toHaveCount(6)
+  await expect(selector.getByRole('button', { name: 'English, default language' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  )
+  await selector.getByRole('button', { name: 'Hindi', exact: true }).click()
+  await expect(page).toHaveURL(/\/hi\/company\/careers$/)
+  await expect(page.getByRole('link', { name: 'Discover our work' })).toHaveAttribute(
+    'href',
+    '/hi/services',
+  )
+  await page.getByRole('link', { name: 'Discover our work' }).click()
+  await expect(page).toHaveURL(/\/hi\/services$/)
+  await page.getByRole('button', { name: 'HI', exact: true }).click()
+  await page
+    .locator('#language-options')
+    .getByRole('button', { name: 'English, default language' })
+    .click()
+  await expect(page).toHaveURL(/\/services$/)
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+})
+
+test('localized administrative routes are blocked and translation endpoint checks origin', async ({
+  request,
+}) => {
+  expect((await request.get('/hi/admin')).status()).toBe(404)
+  expect(
+    (
+      await request.post('/api/translate', {
+        headers: { Origin: 'https://untrusted.invalid' },
+        data: { locale: 'hi', texts: ['Your content.'] },
+      })
+    ).status(),
+  ).toBe(403)
+  expect((await request.get('/careers', { maxRedirects: 0 })).status()).toBe(301)
+})
+
+test('language panel stays readable on mobile and keyboard accessible on desktop', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+  const trigger = page.getByRole('button', { name: 'EN', exact: true })
+  await trigger.click()
+  await expect(
+    page
+      .locator('#language-options')
+      .getByRole('heading', { name: 'A world of words. Your language.' }),
+  ).toBeVisible()
+  expect(
+    (
+      await new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+        .analyze()
+    ).violations,
+  ).toEqual([])
+  await page.screenshot({ path: 'artifacts/v2/screens/language-selector-desktop.png' })
+  await page.keyboard.press('Escape')
+  await expect(trigger).toBeFocused()
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.getByRole('button', { name: 'Choose website language' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Choose website language' })
+  await expect(dialog.getByRole('button', { name: 'English, default language' })).toBeVisible()
+  await expect(
+    dialog.getByRole('group', { name: 'Indian languages' }).getByRole('button'),
+  ).toHaveCount(4)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  )
+  expect(
+    (
+      await new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+        .analyze()
+    ).violations,
+  ).toEqual([])
+  await dialog.getByRole('button', { name: 'English, default language' }).scrollIntoViewIfNeeded()
+  await page.screenshot({ path: 'artifacts/v2/screens/language-selector-mobile.png' })
+})

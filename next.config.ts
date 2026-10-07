@@ -35,6 +35,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     localPatterns: [
+      { pathname: '/favicon.jpeg', search: '' },
       {
         pathname: '/api/media/file/**',
       },

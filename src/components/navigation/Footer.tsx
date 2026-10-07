@@ -1,8 +1,38 @@
-import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import Link from '@/components/i18n/LocalizedLink'
+import { ArrowRight, ArrowUpRight, Mail, MapPin, Phone } from 'lucide-react'
 import { navigation } from '@/config/navigation'
 import { Logo } from './Logo'
 import { getSiteSettings } from '@/lib/content'
+const footerGroups = [
+  {
+    title: 'Capabilities',
+    links: [
+      { label: 'Publishing & content', href: '/services' },
+      { label: 'Translation & localization', href: '/services/translation' },
+      { label: 'Subtitling', href: '/services/subtitling' },
+      { label: 'eLearning localization', href: '/services/elearning-localization' },
+      { label: 'Accessibility', href: '/services/accessibility' },
+    ],
+  },
+  {
+    title: 'Explore',
+    links: [
+      ...navigation.filter((item) =>
+        ['Solutions', 'Industries', 'Technology', 'Resources'].includes(item.label),
+      ),
+      { label: 'Our work', href: '/work' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About EPUBTRANS', href: '/company' },
+      { label: 'Careers', href: '/company/careers' },
+      { label: 'Open opportunities', href: '/company/careers#open-roles' },
+      { label: 'Contact us', href: '/get-a-quote' },
+    ],
+  },
+]
 export async function Footer() {
   const settings = await getSiteSettings()
   const email = settings.email || 'info@epubtrans.com'
@@ -13,49 +43,65 @@ export async function Footer() {
       <div className="et-container">
         <div className="et-footer-cta">
           <div>
-            <p className="et-label">LET’S MAKE YOUR NEXT CHAPTER</p>
+            <p className="et-label">YOUR NEXT CHAPTER STARTS HERE</p>
             <h2>
-              Where will your
-              <br />
-              content take you?
+              Content built for
+              <br />a wider world.
             </h2>
+            <p className="et-footer-cta-copy">
+              Publishing expertise. Language precision. Digital possibilities.
+            </p>
           </div>
           <Link className="et-button et-button-light" href="/get-a-quote">
-            Get a Quote <ArrowRight className="et-arrow" size={22} />
+            Discuss your project <ArrowRight className="et-arrow" size={18} />
           </Link>
         </div>
         <div className="et-footer-grid">
-          <div>
+          <div className="et-footer-brand">
             <Logo />
             <p>
-              Publishing, language, and digital content.
-              <br />
-              Connected through EPUBTRANS.
+              From the first manuscript to the final market. Your partner in publishing,
+              localization and digital content.
             </p>
+            <Link className="et-footer-brand-link" href="/services">
+              Discover our capabilities <ArrowUpRight size={15} aria-hidden="true" />
+            </Link>
           </div>
-          <nav aria-label="Footer navigation">
-            {navigation.map((item) => (
-              <Link key={item.label} href={item.href!}>
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <div>
-            <p className="et-label">GET IN TOUCH</p>
-            <a href={`mailto:${email}`}>{email}</a>
-            <a href={`tel:${phone.replace(/[^+0-9]/g, '')}`}>{phone}</a>
-            <span>{location}</span>
-          </div>
-          <div>
-            <p className="et-label">EXPLORE</p>
-            <Link href="/work">Our work</Link>
-            <Link href="/company">About EPUBTRANS</Link>
-            <Link href="/company/careers">Careers</Link>
-            <span>English · EN</span>
+          {footerGroups.map((group) => (
+            <nav
+              key={group.title}
+              className="et-footer-nav"
+              aria-label={`Footer ${group.title.toLowerCase()}`}
+            >
+              <h3>{group.title}</h3>
+              <ul>
+                {group.links.map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href!}>{item.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
+          <div className="et-footer-contact">
+            <h3>Let’s connect</h3>
+            <p>Tell us what you’re working on.</p>
+            <a href={`mailto:${email}`}>
+              <Mail size={15} aria-hidden="true" />
+              <span>{email}</span>
+            </a>
+            <a href={`tel:${phone.replace(/[^+0-9]/g, '')}`}>
+              <Phone size={15} aria-hidden="true" />
+              <span>{phone}</span>
+            </a>
+            <span className="et-footer-location">
+              <MapPin size={15} aria-hidden="true" />
+              <span>{location}</span>
+            </span>
           </div>
         </div>
         <div className="et-footer-base">
-          <span>© {new Date().getFullYear()} EPUBTRANS</span>
+          <span>© {new Date().getFullYear()} EPUBTRANS. All rights reserved.</span>
           <nav aria-label="Legal navigation">
             <Link href="/privacy-policy">Privacy</Link>
             <Link href="/terms">Terms</Link>

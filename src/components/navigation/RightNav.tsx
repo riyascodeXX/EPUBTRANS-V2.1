@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 
 export function RightNav() {
   return (
@@ -65,3 +65,4 @@ export function RightNav() {
     </div>
   )
 }
+

@@ -2,7 +2,7 @@ import type { Page, Media as MediaType } from '@/payload-types'
 import RichText from '@/components/RichText'
 import { Media } from '@/components/Media'
 import { ArrowLink, PageHero } from './Primitives'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 
 type LayoutBlock = Page['layout'][number]
 export function EnterpriseBlock({ block }: { block: LayoutBlock }) {
@@ -170,3 +170,4 @@ export function EnterpriseBlock({ block }: { block: LayoutBlock }) {
     )
   return null
 }
+

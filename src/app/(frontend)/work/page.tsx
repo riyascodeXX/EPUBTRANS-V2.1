@@ -1,5 +1,5 @@
 import { pageMetadata } from '@/lib/seo'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { listContent } from '@/lib/content'
 import { PageHero, ContentCTA } from '@/components/editorial/Primitives'
 export const dynamic = 'force-dynamic'
@@ -42,3 +42,4 @@ export default async function Work() {
     </main>
   )
 }
+

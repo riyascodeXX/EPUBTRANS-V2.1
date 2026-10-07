@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { navigation } from '@/config/navigation'
 
 export function MobileNav() {
@@ -379,3 +379,4 @@ export function MobileNav() {
     </>
   )
 }
+

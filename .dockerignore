@@ -7,6 +7,7 @@ node_modules
 artifacts
 .local-backups
 private-uploads
+.translation-cache
 public/media
 test-results
 playwright-report

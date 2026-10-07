@@ -24,3 +24,4 @@ export async function Header() {
   }))
   return <HeaderClient navigation={resolved} />
 }
+

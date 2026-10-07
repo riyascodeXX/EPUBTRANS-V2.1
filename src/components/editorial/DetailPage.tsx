@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import type { Service, Solution, Industry } from '@/payload-types'
 import RichText from '@/components/RichText'
 import { ContentCTA, PageHero } from './Primitives'
@@ -110,3 +110,4 @@ export function DetailPage({
     </main>
   )
 }
+

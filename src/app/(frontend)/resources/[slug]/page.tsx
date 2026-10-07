@@ -1,6 +1,6 @@
 import { pageMetadata } from '@/lib/seo'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { contentPayload, getPreviewAccess } from '@/lib/content'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { PageHero, ContentCTA } from '@/components/editorial/Primitives'
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props) {
   return pageMetadata({
     title: post?.meta?.title || post?.title,
     description: post?.meta?.description,
-    alternates: { canonical: `/insights/${slug}` },
+    alternates: { canonical: `/resources/${slug}` },
   })
 }
 export default async function Article({ params }: Props) {
@@ -47,12 +47,12 @@ export default async function Article({ params }: Props) {
     <main>
       {draft && <LivePreviewListener />}
       <nav className="et-container et-breadcrumb" aria-label="Breadcrumb">
-        <Link href="/insights">Insights</Link>
+        <Link href="/resources">Resources</Link>
         <span>/</span>
         <span aria-current="page">{post.title}</span>
       </nav>
       <PageHero
-        eyebrow="PERSPECTIVE"
+        eyebrow="RESOURCE / ARTICLE"
         title={post.title}
         description={post.meta?.description || undefined}
       />

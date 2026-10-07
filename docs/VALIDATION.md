@@ -38,10 +38,21 @@ Next and its ESLint configuration were updated to 16.3.6, Sharp to 0.35.5, Vites
 - One existing solution is published. No approved industry records, articles, client cases, career roles or media were initially present. Empty states and verified capability context are used; the CMS is ready for approved additions.
 - Privacy and terms are explicitly pending owner review and excluded from indexing. Confirm legal text, document retention, contact details and the postal address before launch.
 - Statistics require evidence/verification. Client cases, quotations and logos require permission. Unsupported certifications, metrics and testimonials were not invented.
-- Only English is enabled. Additional locales and RTL direction are planned in configuration; translated public content is not represented as available.
+- The native-language selector offers English plus 10 Indian/global languages, route preservation and RTL reading. Automatic translation uses MyMemory without a key, or Google Cloud Translation when GOOGLE_TRANSLATE_API_KEY is configured. Live French translation and English restoration were verified on the Careers page. See LANGUAGES.md for provider quotas.
 - Docker daemon unavailable locally: image execution, fresh-container migration, Nginx/TLS and backup restoration remain to be verified on the VPS. Follow DEPLOYMENT.md. No live server or DNS was changed.
 
 ## Preservation
 
 The worktree had pre-existing uncommitted changes and custom content. No reset, destructive template seed or wholesale content replacement was run. A private local DB recovery snapshot and copies of original replaced UI files are excluded from Git and Docker. Existing legacy components remain where they may support pre-existing content; the new shell uses the enterprise navigation/footer.
 
+
+
+## Careers and native-language update (7 October 2026)
+
+The careers page now includes work disciplines, published openings, full CMS role content and a contact path for future opportunities. Careers is reachable from Company navigation and /careers redirects to /company/careers. No job openings or benefits were fabricated.
+
+The language selector contains 11 choices: English, four Indian languages and six additional global languages. Previously supported locale URLs remain valid. Localized URLs and internal links preserve page context. Automatic public-copy translation uses a server-side Google Cloud Translation adapter with a key-free MyMemory fallback, content-hash cache, public-text allowlist, bounded batches and request guards. Quote inputs, enquiry review values, references and uploaded filenames are excluded. Nine targeted integration tests and two routing/security browser tests passed. Live French translation through the selector and English restoration were verified on the Careers page; the endpoint also excluded an unregistered private string. Other locales, client translation behavior, accessibility labels and Arabic RTL are covered with mocked translation responses, not a native-language accuracy review.
+
+## Premium language selector refinement
+
+The visible selector is now limited to English as the default, four Indian languages (Hindi, Tamil, Telugu, Bengali) and six global languages (French, Spanish, German, Arabic, Simplified Chinese, Japanese). Native-script buttons replace the basic dropdown. Paper/teal styling, editorial typography, selected checks, hover/focus states and a direct mobile language dialog align with the homepage. Existing locale URL support remains for compatibility. Desktop/mobile language-panel accessibility and route preservation tests passed; the live provider key requirement is unchanged.

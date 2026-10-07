@@ -86,3 +86,4 @@ export function generateMetadata(): Metadata {
     title: `Payload Website Template Search`,
   }
 }
+

@@ -2,7 +2,7 @@ export const legacyRedirects: Record<string, string> = {
   '/about-us': '/company',
   '/contact-us': '/get-a-quote',
   '/portfolio': '/work',
-  '/blogs': '/insights',
+  '/blogs': '/resources',
   '/cover-page-design-services': '/services/cover-page-design',
   '/copyediting-services': '/services/copyediting',
   '/proofreading-services': '/services/proofreading',

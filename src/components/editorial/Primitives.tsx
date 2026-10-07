@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { ArrowRight } from 'lucide-react'
 export function ArrowLink({
   href,
@@ -47,3 +47,4 @@ export function ContentCTA() {
     </section>
   )
 }
+

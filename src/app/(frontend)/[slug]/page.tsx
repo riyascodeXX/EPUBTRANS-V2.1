@@ -28,3 +28,4 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug } = await params
   return generateMeta({ doc: await getCMSPage(slug) })
 }
+

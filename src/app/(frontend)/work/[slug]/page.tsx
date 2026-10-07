@@ -36,3 +36,4 @@ export default async function CaseStudy({ params }: Props) {
     </main>
   )
 }
+

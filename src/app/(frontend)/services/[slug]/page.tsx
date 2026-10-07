@@ -20,3 +20,4 @@ export default async function ServicePage({ params }: Props) {
   if (!document) notFound()
   return <DetailPage document={document} section="What We Do" route="services" />
 }
+

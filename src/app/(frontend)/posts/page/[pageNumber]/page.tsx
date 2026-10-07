@@ -7,5 +7,6 @@ export default async function LegacyPagination({
 }) {
   const { pageNumber } = await params
   if (!/^\d+$/.test(pageNumber) || Number(pageNumber) < 1) notFound()
-  redirect(`/insights?page=${Number(pageNumber)}`)
+  redirect(`/resources?page=${Number(pageNumber)}`)
 }
+

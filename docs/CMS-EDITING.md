@@ -10,7 +10,7 @@ Avoid adding multiple H1 hero blocks to one Page. Provide descriptive text for m
 
 ## Publication and evidence
 
-Services, Solutions, Industries, Technologies, Resources and Careers expose published records only. Drafts remain private. Posts appear under /insights with search, categories and pagination. Published resources appear in the Insights resource section. Categories come from the Categories collection.
+Services, Solutions, Industries, Technologies, Resources and Careers expose published records only. Drafts remain private. Posts appear under /resources with search, article categories and pagination. Published resources appear in the Resources hub's guides and downloads section, alongside practical project checklists. Existing /insights links redirect to /resources. Categories come from the Categories collection.
 
 Case Studies require both published status and confirmed permission for public access. Stats render only with an evidence source and verification; quotes need permission and a source; logo-wall items need permission. Record the actual evidence and editorial approval rather than treating the checkboxes as a substitute for review.
 
@@ -23,3 +23,5 @@ Quote Requests is private. Review the saved contact/project details and attached
 ## Before publishing the business launch
 
 Approve legal text, proposed brand/copy, the postal address and the three draft V1 service destinations. Publish only real articles, roles and authorized cases. Do not run a template seed: the public seed endpoint is deliberately disabled.
+
+Native-language reading is configured through the globe/mobile selector. See LANGUAGES.md for the required translation key, protected enquiry values and cache behavior. Automatic translations do not replace approved English CMS records.

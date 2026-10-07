@@ -1,5 +1,5 @@
 import { pageMetadata } from '@/lib/seo'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { ArrowDown, ArrowUpRight } from 'lucide-react'
 import { ArrowLink } from '@/components/editorial/Primitives'
 import { Reveal } from '@/components/shared/Reveal'
@@ -316,16 +316,17 @@ export default async function HomePage() {
               <ArrowLink href="/work">View learning samples</ArrowLink>
             </div>
             <div>
-              <p className="et-label">INSIGHTS</p>
+              <p className="et-label">RESOURCES</p>
               <h3>
-                A space for
+                A practical start
                 <br />
-                the next perspective.
+                for your next project.
               </h3>
               <p>
-                Discover published perspectives and resources as our editorial library develops.
+                Find project checklists, articles and resources for publishing, localization and
+                accessible content.
               </p>
-              <ArrowLink href="/insights">Explore insights</ArrowLink>
+              <ArrowLink href="/resources">Explore resources</ArrowLink>
             </div>
           </div>
         </div>
@@ -350,3 +351,4 @@ export default async function HomePage() {
     </main>
   )
 }
+

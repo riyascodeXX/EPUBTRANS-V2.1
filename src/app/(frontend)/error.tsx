@@ -1,5 +1,5 @@
 'use client'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 export default function ErrorPage({
   reset,
 }: {
@@ -24,3 +24,4 @@ export default function ErrorPage({
     </main>
   )
 }
+

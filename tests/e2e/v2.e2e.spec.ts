@@ -24,7 +24,7 @@ test('responsive homepage and editorial routes render without overflow', async (
     '/solutions/digital-publishing',
     '/industries',
     '/technology',
-    '/insights',
+    '/resources',
     '/company',
     '/company/careers',
     '/work',

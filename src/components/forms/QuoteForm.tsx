@@ -1,6 +1,6 @@
 'use client'
 import { useRef, useState } from 'react'
-import Link from 'next/link'
+import Link from '@/components/i18n/LocalizedLink'
 import { ArrowRight, ArrowLeft, Check } from 'lucide-react'
 import {
   quoteServices,
@@ -125,13 +125,15 @@ export function QuoteForm() {
     return (
       <section className="et-quote-success" aria-live="polite">
         <Check size={40} />
-        <p className="et-label">REQUEST SAVED / {reference}</p>
+        <p className="et-label" data-private>
+          REQUEST SAVED / {reference}
+        </p>
         <h2>
           Your next chapter
           <br />
           starts here.
         </h2>
-        <p>
+        <p data-private>
           Your project request has been saved for EPUBTRANS to review. Keep reference {reference}{' '}
           when contacting the team.
         </p>
@@ -263,12 +265,13 @@ export function QuoteForm() {
             <ul className="et-file-list">
               {files.map((file, index) => (
                 <li key={`${file.name}-${index}`}>
-                  <span>
+                  <span data-private>
                     {file.name} · {(file.size / 1024).toFixed(0)} KB
                   </span>
                   <button
                     type="button"
                     onClick={() => setFiles((current) => current.filter((_, i) => i !== index))}
+                    data-private
                     aria-label={`Remove ${file.name}`}
                   >
                     Remove
@@ -302,7 +305,7 @@ export function QuoteForm() {
             ].map(([title, value]) => (
               <div key={title}>
                 <dt>{title}</dt>
-                <dd>{value}</dd>
+                <dd data-private>{value}</dd>
               </div>
             ))}
           </dl>

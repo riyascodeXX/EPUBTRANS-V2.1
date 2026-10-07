@@ -46,6 +46,18 @@ export const navigation: NavigationSection[] = [
   { label: 'Solutions', href: '/solutions' },
   { label: 'Industries', href: '/industries' },
   { label: 'Technology', href: '/technology' },
-  { label: 'Insights', href: '/insights' },
-  { label: 'Company', href: '/company' },
+  { label: 'Resources', href: '/resources' },
+  {
+    label: 'Company',
+    href: '/company',
+    groups: [
+      {
+        title: 'EPUBTRANS',
+        items: [
+          { label: 'About EPUBTRANS', href: '/company' },
+          { label: 'Careers', href: '/company/careers' },
+        ],
+      },
+    ],
+  },
 ]
