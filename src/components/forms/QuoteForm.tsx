@@ -9,7 +9,7 @@ import {
   MAX_TOTAL_BYTES,
   type QuoteData,
 } from '@/lib/validation/quote'
-const steps = ['Service', 'Languages', 'Project', 'Files', 'Contact', 'Review', 'Submit']
+const steps = ['Service', 'Project', 'Contact', 'Review']
 const initial: QuoteData = {
   service: '',
   sourceLanguage: '',
@@ -43,13 +43,11 @@ export function QuoteForm() {
     const fields =
       step === 0
         ? ['service']
-        : step === 2
+        : step === 1
           ? ['details', 'deadline']
-          : step === 4
+          : step === 2
             ? ['name', 'email', 'company']
-            : step === 1
-              ? ['sourceLanguage', 'targetLanguages']
-              : []
+            : []
     const relevant = Object.fromEntries(Object.entries(all).filter(([key]) => fields.includes(key)))
     setErrors(relevant)
     if (Object.keys(relevant).length) {
@@ -59,7 +57,7 @@ export function QuoteForm() {
     go(step + 1)
   }
   const input = (
-    key: 'sourceLanguage' | 'targetLanguages' | 'deadline' | 'name' | 'email' | 'company',
+    key: 'deadline' | 'name' | 'email' | 'company',
     label: string,
     type = 'text',
     required = false,
@@ -72,11 +70,12 @@ export function QuoteForm() {
       <input
         id={key}
         type={type}
+        required={required}
         value={data[key]}
         onChange={(event) => update(key, event.target.value)}
         aria-invalid={!!errors[key]}
         aria-describedby={errors[key] ? `${key}-error` : undefined}
-        maxLength={key === 'email' ? 254 : 200}
+        maxLength={key === 'email' ? 254 : key === 'name' ? 100 : 200}
         autoComplete={
           key === 'name'
             ? 'name'
@@ -145,12 +144,32 @@ export function QuoteForm() {
   return (
     <div className="et-quote-layout">
       <aside>
-        <p className="et-label">YOUR PROJECT / {String(step + 1).padStart(2, '0')} OF 07</p>
+        <p className="et-label">
+          YOUR PROJECT / {String(step + 1).padStart(2, '0')} OF{' '}
+          {String(steps.length).padStart(2, '0')}
+        </p>
         <ol className="et-quote-progress">
           {steps.map((item, index) => (
             <li key={item} aria-current={index === step ? 'step' : undefined}>
-              <span>{index < step ? <Check size={12} /> : String(index + 1).padStart(2, '0')}</span>
-              {index < step ? <button onClick={() => go(index)}>{item}</button> : item}
+              {index < step ? (
+                <button
+                  type="button"
+                  onClick={() => go(index)}
+                  aria-label={`Return to ${item} step`}
+                >
+                  <span className="et-quote-step-number" aria-hidden="true">
+                    <Check size={12} />
+                  </span>
+                  <span className="et-quote-step-label">{item}</span>
+                </button>
+              ) : (
+                <>
+                  <span className="et-quote-step-number" aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <span className="et-quote-step-label">{item}</span>
+                </>
+              )}
             </li>
           ))}
         </ol>
@@ -164,7 +183,7 @@ export function QuoteForm() {
         className="et-quote-panel"
         onSubmit={(event) => {
           event.preventDefault()
-          if (step < 6) advance()
+          if (step < steps.length - 1) advance()
           else void submit()
         }}
         noValidate
@@ -174,24 +193,26 @@ export function QuoteForm() {
           {
             [
               'What do you have in mind?',
-              'Which languages?',
               'Tell us about your project.',
-              'Share your source files.',
               'How can we reach you?',
-              'One last look.',
-              'Ready for the next chapter?',
+              'Review your request.',
             ][step]
           }
         </h2>
         {step === 0 && (
           <fieldset>
             <legend className="sr-only">Choose a service</legend>
+            <p className="et-form-help">
+              Select a service to get started. Not sure? Select “Other / discuss my project”.
+            </p>
             <div className="et-service-options">
               {quoteServices.map((service) => (
                 <label key={service}>
                   <input
                     type="radio"
                     name="service"
+                    required
+                    aria-describedby={errors.service ? 'service-error' : undefined}
                     value={service}
                     checked={data.service === service}
                     onChange={() => update('service', service)}
@@ -201,24 +222,20 @@ export function QuoteForm() {
                 </label>
               ))}
             </div>
-            {errors.service && <p className="et-field-error">{errors.service}</p>}
+            {errors.service && (
+              <p id="service-error" className="et-field-error">
+                {errors.service}
+              </p>
+            )}
           </fieldset>
         )}
         {step === 1 && (
-          <>
-            <p className="et-form-help">
-              Optional. Leave these blank if your project doesn’t involve translation.
-            </p>
-            {input('sourceLanguage', 'Source language')}
-            {input('targetLanguages', 'Target languages')}
-          </>
-        )}
-        {step === 2 && (
           <>
             <div className="et-field">
               <label htmlFor="details">Project requirements *</label>
               <textarea
                 id="details"
+                required
                 rows={6}
                 value={data.details}
                 maxLength={5000}
@@ -228,24 +245,21 @@ export function QuoteForm() {
               />
               <p id="details-help" className={errors.details ? 'et-field-error' : 'et-form-help'}>
                 {errors.details ||
-                  'Include your formats, approximate volume, audience and review requirements.'}
+                  'Tell us what you need, your content format and approximate volume.'}
               </p>
             </div>
             {input('deadline', 'Preferred delivery date (optional)', 'date')}
-          </>
-        )}
-        {step === 3 && (
-          <>
             <p className="et-form-help">
-              Optional. PDF, TXT or DOCX. Up to 3 files, 10 MB each, 20 MB total.
+              Have a brief or sample? Attach it below, or continue without files.
             </p>
             <div className="et-file-input">
-              <label htmlFor="files">Choose project files</label>
+              <label htmlFor="files">Project files (optional)</label>
               <input
                 type="file"
                 id="files"
                 multiple
                 accept=".pdf,.txt,.docx"
+                aria-describedby="files-help"
                 onChange={(event) => {
                   const next = Array.from(event.target.files || [])
                   if (
@@ -261,6 +275,9 @@ export function QuoteForm() {
                   setMessage('')
                 }}
               />
+              <p id="files-help" className="et-form-help">
+                PDF, TXT or DOCX. Up to 3 files, 10 MB each, 20 MB total.
+              </p>
             </div>
             <ul className="et-file-list">
               {files.map((file, index) => (
@@ -281,22 +298,20 @@ export function QuoteForm() {
             </ul>
           </>
         )}
-        {step === 4 && (
+        {step === 2 && (
           <>
+            <p className="et-form-help">
+              Add your name and email so our team can respond. Company is optional.
+            </p>
             {input('name', 'Full name', 'text', true)}
             {input('email', 'Email address', 'email', true)}
             {input('company', 'Company (optional)')}
           </>
         )}
-        {step === 5 && (
+        {step === 3 && (
           <dl className="et-review">
             {[
               ['Service', data.service],
-              [
-                'Languages',
-                [data.sourceLanguage, data.targetLanguages].filter(Boolean).join(' → ') ||
-                  'Not specified',
-              ],
               ['Project', data.details],
               ['Preferred date', data.deadline || 'Not specified'],
               ['Files', files.map((file) => file.name).join(', ') || 'No files'],
@@ -310,7 +325,7 @@ export function QuoteForm() {
             ))}
           </dl>
         )}
-        {step === 6 && (
+        {step === 3 && (
           <>
             <p className="et-form-help">
               Your request will be saved for review. Scope, pricing and delivery dates are agreed
@@ -319,6 +334,9 @@ export function QuoteForm() {
             <label className="et-consent">
               <input
                 type="checkbox"
+                required
+                aria-invalid={!!errors.consent}
+                aria-describedby={errors.consent ? 'consent-error' : undefined}
                 checked={data.consent}
                 onChange={(event) => update('consent', event.target.checked)}
               />
@@ -327,7 +345,11 @@ export function QuoteForm() {
                 to my project request. <Link href="/privacy-policy">Privacy information</Link>
               </span>
             </label>
-            {errors.consent && <p className="et-field-error">{errors.consent}</p>}
+            {errors.consent && (
+              <p id="consent-error" className="et-field-error">
+                {errors.consent}
+              </p>
+            )}
           </>
         )}
         <div className="et-honeypot" aria-hidden="true">
@@ -350,7 +372,11 @@ export function QuoteForm() {
             </button>
           )}
           <button type="submit" className="et-button" disabled={pending}>
-            {pending ? 'Saving request…' : step === 6 ? 'Submit request' : 'Continue'}
+            {pending
+              ? 'Saving request…'
+              : step === steps.length - 1
+                ? 'Submit request'
+                : 'Continue'}
             <ArrowRight size={18} />
           </button>
         </div>

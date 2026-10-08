@@ -1,21 +1,30 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import { Header } from '@/components/navigation/Header'
 import { Footer } from '@/components/navigation/Footer'
 import { Providers } from '@/providers'
 import { getServerSideURL } from '@/utilities/getURL'
-import { headers } from 'next/headers'
+import { cookies, headers } from 'next/headers'
+import { themeCookieKey } from '@/providers/Theme/shared'
 import { getLanguage } from '@/config/languages'
 import { LocaleProvider } from '@/components/i18n/LocaleProvider'
 import { EpubtransAssistant } from '@/components/assistant/EpubtransAssistant'
 import { getSiteSettings } from '@/lib/content'
-import './globals.css'
-import '../../styles-tokens.css'
-import '../../styles-enterprise.css'
-import '@/components/assistant/assistant.css'
+import '@/styles/index.css'
+export async function generateViewport(): Promise<Viewport> {
+  const dark = (await cookies()).get(themeCookieKey)?.value === 'dark'
+  return {
+    width: 'device-width',
+    initialScale: 1,
+    viewportFit: 'cover',
+    interactiveWidget: 'resizes-content',
+    themeColor: dark ? '#0e1b19' : '#f4f2eb',
+  }
+}
 export const dynamic = 'force-dynamic'
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
+  const theme = (await cookies()).get(themeCookieKey)?.value === 'dark' ? 'dark' : 'light'
   const locale = getLanguage((await headers()).get('x-epubtrans-language') || 'en')?.code || 'en'
   const settings = await getSiteSettings()
   const organization = {
@@ -31,10 +40,10 @@ export default async function FrontendLayout({ children }: { children: React.Rea
       className={`${GeistSans.variable} ${GeistMono.variable}`}
       lang="en"
       dir="ltr"
-      data-theme="light"
+      data-theme={theme}
     >
       <body className="et-site">
-        <Providers>
+        <Providers initialTheme={theme}>
           <LocaleProvider locale={locale}>
             <a className="et-skip" href="#main-content">
               Skip to main content
@@ -65,7 +74,13 @@ export const metadata: Metadata = {
   title: { default: 'EPUBTRANS', template: '%s | EPUBTRANS' },
   description:
     'Professional publishing, translation, localization, multimedia, and accessibility services.',
-  icons: { icon: '/favicon.jpeg' },
+  icons: {
+    icon: [
+      { url: '/icons/epubtrans.svg', type: 'image/svg+xml', sizes: 'any' },
+      { url: '/icons/epubtrans-32.png', type: 'image/png', sizes: '32x32' },
+    ],
+    apple: { url: '/icons/epubtrans-180.png', sizes: '180x180', type: 'image/png' },
+  },
   openGraph: {
     type: 'website',
     siteName: 'EPUBTRANS',

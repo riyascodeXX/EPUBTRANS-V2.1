@@ -4,7 +4,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 const url = new URL(process.env.DATABASE_URL)
 if (!['127.0.0.1','localhost','::1'].includes(url.hostname)) throw new Error('Existing local database adoption only; remote databases require reviewed migration deployment.')
-const directory = 'src/migrations'
+const directory = 'src/payload/migrations'
 const baseline = '20261007_103004_baseline'
 const enterprise = '20261007_103126_enterprise'
 const pool = new pg.Pool({connectionString:process.env.DATABASE_URL})

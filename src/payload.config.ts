@@ -4,18 +4,18 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
-import { Categories } from './collections/Categories'
-import { Media } from './collections/Media'
-import { Pages } from './collections/Pages'
-import { Posts } from './collections/Posts'
-import { Users } from './collections/Users'
+import { Categories } from './payload/collections/Categories'
+import { Media } from './payload/collections/Media'
+import { Pages } from './payload/collections/Pages'
+import { Posts } from './payload/collections/Posts'
+import { Users } from './payload/collections/Users'
 
-import { Footer } from './Footer/config'
-import { Header } from './Header/config'
+import { Footer } from './payload/globals/Footer/config'
+import { Header } from './payload/globals/Header/config'
 
-import { plugins } from './plugins'
+import { plugins } from './payload/plugins'
 
-import { defaultLexical } from '@/fields/defaultLexical'
+import { defaultLexical } from '@/payload/fields/defaultLexical'
 
 import { getServerSideURL } from './utilities/getURL'
 
@@ -91,6 +91,7 @@ export default buildConfig({
 
   db: postgresAdapter({
     push: false,
+    migrationDir: path.resolve(dirname, 'payload/migrations'),
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },

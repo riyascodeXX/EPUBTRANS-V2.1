@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload'
-import { authenticated } from '@/access/authenticated'
+import { authenticated } from '@/payload/access/authenticated'
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
   access: { read: () => true, update: authenticated },

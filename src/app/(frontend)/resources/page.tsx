@@ -45,7 +45,7 @@ const projectGuides = [
       'Include source files, image descriptions and any existing audit findings.',
       'Plan time for testing, corrections and a final review before release.',
     ],
-    href: '/services/accessibility',
+    href: '/services#accessibility',
     link: 'Explore accessibility services',
   },
 ]

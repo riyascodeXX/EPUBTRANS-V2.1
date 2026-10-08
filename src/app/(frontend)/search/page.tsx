@@ -4,7 +4,7 @@ import { CollectionArchive } from '@/components/CollectionArchive'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
-import { Search } from '@/search/Component'
+import { Search } from '@/components/search/Component'
 import PageClient from './page.client'
 import { CardPostData } from '@/components/Card'
 
@@ -60,7 +60,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
   })
 
   return (
-    <div className="pt-24 pb-24">
+    <main className="pt-24 pb-24">
       <PageClient />
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none text-center">
@@ -77,7 +77,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       ) : (
         <div className="container">No results found.</div>
       )}
-    </div>
+    </main>
   )
 }
 
@@ -86,4 +86,3 @@ export function generateMetadata(): Metadata {
     title: `Payload Website Template Search`,
   }
 }
-

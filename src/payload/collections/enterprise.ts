@@ -1,6 +1,6 @@
 import type { CollectionConfig, Field, Where } from 'payload'
-import { authenticated } from '@/access/authenticated'
-import { publishedContent } from '@/access/publishedContent'
+import { authenticated } from '@/payload/access/authenticated'
+import { publishedContent } from '@/payload/access/publishedContent'
 const itemFields: Field[] = [
   { name: 'title', type: 'text', required: true },
   { name: 'description', type: 'textarea' },

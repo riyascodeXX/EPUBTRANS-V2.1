@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { getCMSPage, getPreviewAccess } from '@/lib/content'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { RenderHero } from '@/heros/RenderHero'
+import { RenderHero } from '@/components/heroes/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 

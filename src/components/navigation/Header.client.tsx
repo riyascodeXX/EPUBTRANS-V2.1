@@ -5,6 +5,7 @@ import Link from '@/components/i18n/LocalizedLink'
 import { ArrowRight, ChevronDown, Globe2, Menu, X } from 'lucide-react'
 import type { NavigationSection } from '@/types/navigation'
 import { Logo } from './Logo'
+import { ThemeToggle } from './ThemeToggle'
 import { LanguageSelector } from '@/components/i18n/LanguageSelector'
 import { useSiteLocale } from '@/components/i18n/LocaleProvider'
 import { stripLanguage } from '@/config/languages'
@@ -30,6 +31,36 @@ function HeaderState({
   const menuButton = useRef<HTMLButtonElement>(null)
   const trigger = useRef<HTMLButtonElement | null>(null)
   const [mobileSection, setMobileSection] = useState<number | null>(null)
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 1200px)')
+    const handleBreakpoint = () => {
+      const navigationWasOpen = dialog.current?.open
+      const languageWasOpen = languageDialog.current?.open
+      const desktopMenu = header.current?.querySelector<HTMLButtonElement>(
+        '.et-nav-link[aria-expanded="true"]',
+      )
+      setOpen(null)
+      if (desktop.matches) {
+        dialog.current?.close()
+        languageDialog.current?.close()
+        if (navigationWasOpen || languageWasOpen) {
+          document.body.style.overflow = ''
+          header.current
+            ?.querySelector<HTMLButtonElement>(
+              languageWasOpen ? '.et-header-actions button' : '.et-desktop-nav button',
+            )
+            ?.focus()
+        }
+      } else if (desktopMenu) {
+        ;(desktopMenu.getAttribute('aria-controls') === 'language-options'
+          ? languageButton.current
+          : menuButton.current
+        )?.focus()
+      }
+    }
+    desktop.addEventListener('change', handleBreakpoint)
+    return () => desktop.removeEventListener('change', handleBreakpoint)
+  }, [])
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
     onScroll()
@@ -138,6 +169,7 @@ function HeaderState({
           <Link className="et-button" href="/get-a-quote">
             Get a Quote <ArrowRight size={16} className="et-arrow" />
           </Link>
+          <ThemeToggle />
         </div>
         <button
           ref={languageButton}
@@ -152,6 +184,7 @@ function HeaderState({
           <Globe2 size={17} aria-hidden="true" />
           <span data-no-translate>{locale === 'zh-CN' ? 'ZH' : locale.toUpperCase()}</span>
         </button>
+        <ThemeToggle compact />
         <button
           ref={menuButton}
           className="et-mobile-toggle"
@@ -177,13 +210,23 @@ function HeaderState({
         (item, index) =>
           open === index &&
           item.groups && (
-            <div key={item.label} className="et-mega" id={`mega-${index}`}>
+            <div
+              key={item.label}
+              className={`et-mega${item.label === 'Company' ? ' et-mega-company' : item.label === 'What We Do' ? ' et-mega-services' : ''}`}
+              id={`mega-${index}`}
+            >
               <div className="et-container">
                 <div className="et-mega-top">
-                  <Link className="et-mega-title" href={item.href!} onClick={() => setOpen(null)}>
-                    Explore {item.label.toLowerCase()}{' '}
-                    <ArrowRight className="et-arrow" size={25} style={{ display: 'inline' }} />
-                  </Link>
+                  <div>
+                    {item.description && (
+                      <p className="et-mega-eyebrow">{item.label.toUpperCase()} / EPUBTRANS</p>
+                    )}
+                    <Link className="et-mega-title" href={item.href!} onClick={() => setOpen(null)}>
+                      {item.overviewLabel ?? `Explore ${item.label.toLowerCase()}`}{' '}
+                      <ArrowRight className="et-arrow" size={25} style={{ display: 'inline' }} />
+                    </Link>
+                    {item.description && <p className="et-mega-description">{item.description}</p>}
+                  </div>
                   <button
                     onClick={() => {
                       setOpen(null)
@@ -196,8 +239,18 @@ function HeaderState({
                 </div>
                 <div className="et-mega-groups">
                   {item.groups.map((group) => (
-                    <div key={group.title}>
+                    <div
+                      key={group.title}
+                      className={
+                        item.label === 'What We Do' && group.items.length > 6
+                          ? 'et-mega-group-wide'
+                          : undefined
+                      }
+                    >
                       <h3>{group.title}</h3>
+                      {group.description && (
+                        <p className="et-mega-group-description">{group.description}</p>
+                      )}
                       <ul>
                         {group.items.map((link) => (
                           <li key={link.label}>
@@ -247,14 +300,18 @@ function HeaderState({
                   {mobileSection === index && (
                     <div id={`mobile-${index}`}>
                       <Link href={item.href!} onClick={closeMobile}>
-                        {item.label === 'What We Do'
-                          ? 'Explore all services'
-                          : 'Explore ' + item.label.toLowerCase()}{' '}
+                        {item.overviewLabel ??
+                          (item.label === 'What We Do'
+                            ? 'Explore all services'
+                            : 'Explore ' + item.label.toLowerCase())}{' '}
                         →
                       </Link>
                       {item.groups.map((group) => (
                         <details key={group.title}>
                           <summary>{group.title}</summary>
+                          {group.description && (
+                            <p className="et-mobile-group-description">{group.description}</p>
+                          )}
                           <ul>
                             {group.items.map((link) => (
                               <li key={link.label}>

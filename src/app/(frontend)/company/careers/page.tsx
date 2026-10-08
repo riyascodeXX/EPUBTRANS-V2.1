@@ -21,7 +21,7 @@ export default async function Careers() {
         title="Your talent. Our next chapter."
         description="Bring your interest in words, languages and digital content to the conversation. Explore the work behind every EPUBTRANS edition."
       />
-      <section className="et-container et-detail-grid">
+      <section id="life-at-epubtrans" className="et-container et-detail-grid et-company-section">
         <h2>Where craft meets possibility.</h2>
         <div>
           <p className="et-lead">
@@ -64,7 +64,7 @@ export default async function Careers() {
           ))}
         </div>
       </section>
-      <section id="open-roles" className="et-container et-content-section">
+      <section id="open-roles" className="et-container et-content-section et-company-section">
         <p className="et-label">CURRENT OPPORTUNITIES</p>
         <h2>Find your next chapter.</h2>
         {careers.length ? (
@@ -93,6 +93,25 @@ export default async function Careers() {
             </p>
           </div>
         )}
+      </section>
+      <section id="internships" className="et-container et-content-section et-company-section">
+        <p className="et-label">INTERNSHIPS / EARLY CAREERS</p>
+        <h2>Start with curiosity. Build your craft.</h2>
+        <p className="et-lead">
+          Interested in editorial work, languages or digital publishing? Contact our team to ask
+          whether an internship opportunity is available in your area of interest.
+        </p>
+        <p>
+          Include your course of study, relevant skills, preferred dates and any work samples.
+          Availability, mentorship, duration and application requirements will be confirmed by the
+          team.
+        </p>
+        <a
+          className="et-text-link"
+          href={`mailto:${email}?subject=${encodeURIComponent('Internship enquiry at EPUBTRANS')}`}
+        >
+          Enquire about internships →
+        </a>
       </section>
       <section className="et-technology-home">
         <div className="et-container et-technology-grid">

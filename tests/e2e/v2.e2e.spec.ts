@@ -54,31 +54,37 @@ test('quote flow validates, preserves details and saves only on successful serve
   await page.getByLabel('Publishing & content', { exact: true }).check()
   await page.getByRole('button', { name: 'Continue', exact: true }).click()
   await page.getByRole('button', { name: 'Continue', exact: true }).click()
+  await expect(page.getByText('Describe your project in 20–5,000 characters.')).toBeVisible()
   await page
     .getByLabel('Project requirements')
     .fill(
       'This is an automated QA request for a sample publishing project. No real business request.',
     )
   await page.getByRole('button', { name: 'Continue', exact: true }).click()
-  await page
-    .locator('#files')
-    .setInputFiles({
-      name: 'qa-sample.txt',
-      mimeType: 'text/plain',
-      buffer: Buffer.from('Test manuscript sample for verification only.'),
-    })
   await page.getByRole('button', { name: 'Continue', exact: true }).click()
+  await expect(page.getByText('Enter a valid email address.')).toBeVisible()
   await page.getByLabel('Full name').fill('EPUBTRANS Automated QA')
   await page.getByLabel('Email address').fill('qa@epubtrans.example.invalid')
   await page.getByRole('button', { name: 'Continue', exact: true }).click()
-  await expect(page.getByText('qa-sample.txt')).toBeVisible()
+  await expect(page.getByText('No files', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Back', exact: true }).click()
   await expect(page.getByLabel('Full name')).toHaveValue('EPUBTRANS Automated QA')
   await page.getByRole('button', { name: 'Continue', exact: true }).click()
-  await page.getByRole('button', { name: 'Continue', exact: true }).click()
   await page.getByRole('button', { name: 'Submit request', exact: true }).click()
   await expect(page.getByText('Please confirm we can use these details')).toBeVisible()
+  let attempts = 0
+  await page.route('**/api/quote', async (route) => {
+    attempts++
+    await route.fulfill(
+      attempts === 1
+        ? { status: 503, json: { error: 'Please try again.' } }
+        : { status: 201, json: { reference: 'QUOTE-FLOW-TEST' } },
+    )
+  })
   await page.getByRole('checkbox').check()
+  await page.getByRole('button', { name: 'Submit request', exact: true }).click()
+  await expect(page.getByText('Please try again.', { exact: true })).toBeVisible()
+  await expect(page.getByText('Your project request has been saved')).toHaveCount(0)
   await page.getByRole('button', { name: 'Submit request', exact: true }).click()
   await expect(page.getByText('Your project request has been saved')).toBeVisible()
 })

@@ -2,6 +2,27 @@
 
 An editorial publishing and localization website using Next.js, React, TypeScript, Payload CMS and PostgreSQL.
 
+## Project structure
+
+```text
+src/
+├── app/             Website routes, API routes and CMS admin routes
+├── blocks/          Reusable CMS content blocks and their renderers
+├── components/      UI grouped by purpose: navigation, forms, heroes, search, etc.
+├── config/          Navigation, languages, contact details and site settings
+├── lib/             Content queries, assistant logic, translation, SEO and validation
+├── payload/         CMS collections, globals, fields, hooks, access and migrations
+├── providers/       Theme and shared React providers
+├── styles/          Global CSS, design tokens, responsive rules and themes
+├── types/           Shared application types
+├── utilities/       Reusable helpers and React hooks
+├── payload.config.ts    CMS entry point
+├── payload-types.ts     Generated CMS types
+└── proxy.ts             Next.js request handling
+```
+
+See the [folder guide](docs/PROJECT-STRUCTURE.md) for where to add new files.
+
 ## Local development
 
 Use Node 22 and npm. Copy `.env.example` to `.env` and configure a PostgreSQL connection, a strong Payload secret and the local server URL. Keep secrets out of Git.

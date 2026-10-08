@@ -1,5 +1,5 @@
-import { authenticated } from '@/access/authenticated'
-import { publishedContent } from '@/access/publishedContent'
+import { authenticated } from '@/payload/access/authenticated'
+import { publishedContent } from '@/payload/access/publishedContent'
 import type { CollectionConfig } from 'payload'
 
 export const Services: CollectionConfig = {
